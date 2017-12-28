@@ -2,7 +2,9 @@ package com.redittai.pit;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 
 import com.redittai.pit.Models.pitPoint;
@@ -38,13 +40,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
     // used to determine the position of the initialized pitPoint
-//    private float getScreenWidth(){
-//        DisplayMetrics dm = new DisplayMetrics();
-//        WindowManager wm = (WindowManager) getApplicationContext().getSystemService(WINDOW_SERVICE);
-//        wm.getDefaultDisplay().getMetrics(dm);
-//        int widthInPixel = Math.round(dm.widthPixels);
-//        return widthInPixel;
-//    }
+    private float getScreenWidth(){
+        DisplayMetrics dm = new DisplayMetrics();
+        WindowManager wm = (WindowManager) getApplicationContext().getSystemService(WINDOW_SERVICE);
+        wm.getDefaultDisplay().getMetrics(dm);
+        int widthInPixel = Math.round(dm.widthPixels);
+        return widthInPixel;
+    }
     // add a new pit point to the view group
     private void addaNewPitPoint(){
         pitPoint p = new pitPoint(getApplicationContext(),pit.getWidth()/2 , pit.getHeight() / 2);
