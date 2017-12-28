@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.redittai.shutterflyproject.MainActivity">
+    tools:context="com.redittai.pit.MainActivity">
 
 
     <Button
@@ -21,7 +21,7 @@
 
     <view
         android:id="@+id/CustomComponent"
-        class="com.redittai.shutterflyproject.Views.mCanvas"
+        class="com.redittai.pit.Views.mCanvas"
         id="@+id/CustomView"
         android:layout_width="0dp"
         android:layout_height="0dp"
