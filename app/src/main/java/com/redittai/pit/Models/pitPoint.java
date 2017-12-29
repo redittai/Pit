@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.View;
 
 /**
- * Created by redittai on 27/12/2017.
+ * Created by redittai on 27/12/2017 for Shutterfly Job interview project .
  */
 
 public class pitPoint extends View{
