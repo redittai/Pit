@@ -248,14 +248,16 @@ public class mCanvas extends View {
      in the function ( pointInitStep )
      */
     public void initFirstPitPoints() {
+        Random r = new Random();
 
 
         for (int i = 0; i < 5; i++) {
-            Random r = new Random();
             int x = r.nextInt(pointInitStep);
             int y = r.nextInt( pointInitStep);
 
-            pitPoint p1 = new pitPoint(getContext(),calculateScreenRatioForRandomXPoints(x), calculateScreenRatioForRandomYPoints(y)) ;
+
+
+            pitPoint p1 = new pitPoint(getContext(),x, y) ;
 
 
             this.pitPoints.add(p1);
@@ -263,26 +265,23 @@ public class mCanvas extends View {
         }
 
     }
+    boolean IS_FIRST_INIT = true;
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        Log.i("a1", "width: "+MeasureSpec.getSize(widthMeasureSpec) + " Height: "+MeasureSpec.getSize(heightMeasureSpec));
 
-    private int calculateScreenRatioForRandomXPoints(int x){
-        int pointX;
-        if (this.myCanvas != null) {
-            pointX = (x/pointInitStep) *  this.myCanvas.getWidth() ;
-            return pointX;
-        }
-
-        return x;
+            this.screenWidth = MeasureSpec.getSize(widthMeasureSpec);
+            this.screenHeight = MeasureSpec.getSize(heightMeasureSpec);
+            this.pointInitStep = MeasureSpec.getSize(widthMeasureSpec);
+            if (IS_FIRST_INIT) {
+                initFirstPitPoints();
+                IS_FIRST_INIT = false;
+            }
     }
-    private int calculateScreenRatioForRandomYPoints(int y){
-        int pointY;
 
-        if (this.myCanvas != null) {
-            pointY = (y/pointInitStep) *  this.myCanvas.getHeight() ;
-            return pointY;
-        }
 
-        return y;
-    }
+
 
 }
 

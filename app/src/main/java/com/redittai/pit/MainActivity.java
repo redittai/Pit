@@ -41,11 +41,12 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         if (IS_FIRST_ENTER){
-            ((mCanvas)pit). initFirstPitPoints();
+           // ((mCanvas)pit). initFirstPitPoints();
             IS_FIRST_ENTER = false;
         }
 
     }
+
 
 
 
