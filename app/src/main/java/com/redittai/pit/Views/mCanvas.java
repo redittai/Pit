@@ -83,11 +83,6 @@ public class mCanvas extends View {
         yellow.setColor(Color.YELLOW);
         yellow.setStyle(Paint.Style.FILL);
 
-        // for debug purpose.
-        purple = new Paint();
-        purple.setColor(Color.MAGENTA);
-        purple.setStyle(Paint.Style.FILL);
-
     }
     @Override
     protected void onDraw(Canvas canvas) {
@@ -238,9 +233,8 @@ public class mCanvas extends View {
                 return    Integer.valueOf(point1).compareTo(point2);         }
         });
     }
+
     int pointInitStep = 600;
-
-
 
     /**
      * init first 5 pitPoints. Try to calculate various screen sizes  calculateScreenRatioForRandomXPoints and
@@ -250,22 +244,21 @@ public class mCanvas extends View {
     public void initFirstPitPoints() {
         Random r = new Random();
 
-
         for (int i = 0; i < 5; i++) {
             int x = r.nextInt(pointInitStep);
             int y = r.nextInt( pointInitStep);
 
-
-
-            pitPoint p1 = new pitPoint(getContext(),x, y) ;
-
-
+            pitPoint p1 = new pitPoint(getContext(),x, y);
             this.pitPoints.add(p1);
-
         }
-
     }
     boolean IS_FIRST_INIT = true;
+
+    /**
+     * check screen size and initial 5 Random pitPoints on all screen.
+     * @param widthMeasureSpec
+     * @param heightMeasureSpec
+     */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);

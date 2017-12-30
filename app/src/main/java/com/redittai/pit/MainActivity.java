@@ -10,7 +10,6 @@ import com.redittai.pit.Views.mCanvas;
 public class MainActivity extends AppCompatActivity {
     Button addPit;
     View pit;
-    public static boolean IS_FIRST_ENTER = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,24 +29,5 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
-    /**
-     * Check if on resume is called for the first time.
-     * If it is create 5 pitPoints.
-     * Called from mCanvas.class
-     */
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (IS_FIRST_ENTER){
-           // ((mCanvas)pit). initFirstPitPoints();
-            IS_FIRST_ENTER = false;
-        }
-
-    }
-
-
-
 
 }
