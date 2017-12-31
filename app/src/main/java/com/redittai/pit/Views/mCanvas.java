@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -29,7 +30,9 @@ public class mCanvas extends View {
    float screenHeight;
    float screenWidth;
    public ArrayList<pitPoint> pitPoints = new ArrayList<>();
-   Paint black, red , blue , yellow , purple;
+   Paint black, red , blue , yellow ;
+    int currentPitInArray = -1;
+
 
 
     public mCanvas(Context context) {
@@ -117,7 +120,9 @@ public class mCanvas extends View {
      * Adds a new point in the origin axis (0, 0) coordinate.
      */
     public void createNewPitPoint(){
+
         pitPoints.add(new pitPoint(getContext(),screenWidth/2, screenHeight/2));
+        sortArray(pitPoints);
         invalidate();
     }
 
@@ -139,12 +144,11 @@ public class mCanvas extends View {
           this.myCanvas.drawPath(path, blue);
 
         }
-        Log.i(tag, pitPoints.size()+"");
 
     }
 
     private void drawPits() {
-        sortArray(pitPoints);
+      
         // Iterate threw the pitPoint list and draw the points
         for (int i = 0; i < pitPoints.size() ; i++){
 
@@ -176,8 +180,7 @@ public class mCanvas extends View {
                        draggingPoint.setxPoint(event.getX());
                        draggingPoint.setyPoint(event.getY());
 
-
-                       invalidate();
+                       invalidate(getAndInvalidateOnlyChangedData());
                    }
                }
                 break;
@@ -186,6 +189,7 @@ public class mCanvas extends View {
              */
             case MotionEvent.ACTION_UP:
                 draggingPoint = null;
+                currentPitInArray = -1;
                 invalidate();
 
                 break;
@@ -194,8 +198,7 @@ public class mCanvas extends View {
         return true;
     }
 
-    int step = 40; //
-
+    int step = 40;
     /**
      *     check if the a pit point is "picked up" and return the specific point in the pitPoints array
 
@@ -211,7 +214,7 @@ public class mCanvas extends View {
         for (int i = 0 ; i < pitPoints.size() ; i++){
             if (pitPoints.get(i).getxPoint() > x - step && pitPoints.get(i).getxPoint() < x + step && pitPoints.get(i).getyPoint()
                     > y-step && pitPoints.get(i).getyPoint() < y+step){
-
+                currentPitInArray = i;
                 return pitPoints.get(i);
             }
         }
@@ -251,6 +254,7 @@ public class mCanvas extends View {
             pitPoint p1 = new pitPoint(getContext(),x, y);
             this.pitPoints.add(p1);
         }
+        sortArray(pitPoints);
     }
     boolean IS_FIRST_INIT = true;
 
@@ -274,8 +278,80 @@ public class mCanvas extends View {
     }
 
 
+    /**
+     * For memory optimizations, Avoid sorting Whole array each change. Switch only two objects when needed.
+     * @param smaller smallest x value of pitPoint
+     * @param larger Largest x value of pitPoint
+     */
+    private void switchItemsInArray(int smaller , int larger ){
+        pitPoint temp;
+        temp = pitPoints.get(smaller);
+        pitPoints.set(smaller,pitPoints.get(larger));
+        pitPoints.set(larger,temp);
+
+    }
+
+    /**
+     *  Iterate threw nearest pitPoints in pitPoints Array,, compare them and switch if needed.
+     *  return X values to determine only the changed rect.
+     * @return Rect of changed data. Avoid drawing whole canvas in every Motion event.
+     */
+    private Rect getAndInvalidateOnlyChangedData() {
 
 
+        float currentXValue = pitPoints.get(currentPitInArray).getxPoint();
+
+        float previousXvalue = 0;
+
+        if (currentPitInArray > 0) {
+
+            previousXvalue = pitPoints.get(currentPitInArray-1).getxPoint();
+        }
+
+        float nextXvalue = 0;
+
+        if (currentPitInArray < pitPoints.size()-1) {
+            nextXvalue = pitPoints.get(currentPitInArray+1).getxPoint();
+        }
+
+        if (currentPitInArray == 0 ){
+
+            if (currentXValue > nextXvalue) {
+                switchItemsInArray(currentPitInArray + 1, currentPitInArray);
+                currentPitInArray = currentPitInArray + 1;
+                return new Rect((int)currentXValue , 0 , (int)nextXvalue , (int)screenHeight);
+
+            }
+
+        }
+        else if (currentPitInArray == pitPoints.size()-1){
+
+            if (currentXValue < previousXvalue){
+
+                switchItemsInArray(currentPitInArray,currentPitInArray-1);
+                currentPitInArray = currentPitInArray - 1;
+
+            }
+                return new Rect((int)previousXvalue , 0 , (int)currentXValue , (int)screenHeight);
+        }
+
+        else {
+            if (currentXValue < previousXvalue){
+               switchItemsInArray(currentPitInArray,currentPitInArray-1);
+               currentPitInArray = currentPitInArray - 1;
+            }
+
+            if (nextXvalue > 0) {
+                if (currentXValue > nextXvalue) {
+
+                    switchItemsInArray(currentPitInArray + 1, currentPitInArray);
+                     currentPitInArray = currentPitInArray + 1;
+                }
+            }
+        }
+        // Memory optimizations, draw only changed part in canvas.
+        return new Rect((int)previousXvalue , 0 , (int)nextXvalue , (int)screenHeight);
+    }
 }
 
 
